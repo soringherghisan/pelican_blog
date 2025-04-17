@@ -8,7 +8,7 @@ SITESUBTITLE = 'Generalist'
 
 BROWSER_COLOR = '#d6a691'       # todo: # what does this do ? doesn't seem to have any effect
 SITELOGO = SITEURL + '/images/profile.png'
-FAVICON = SITEURL + '/favicon.ico'
+FAVICON = SITEURL + '/images/favicon.ico'
 
 PATH = 'content'
 ROBOTS = 'index, follow'
