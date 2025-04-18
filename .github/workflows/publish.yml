@@ -1,3 +1,4 @@
+
 name: Deploy Pelican Site to GitHub Pages
 
 on:
@@ -17,50 +18,44 @@ jobs:
         with:
           fetch-depth: 0
           submodules: recursive
-
+          
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
-
+          
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
+          
       - name: Setup Git config
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-
+          
       - name: Build site
         run: |
           pelican content -o output -s publishconf.py
-
+          
       - name: Deploy to GitHub Pages
         run: |
-          # Save the current branch name
-          CURRENT_BRANCH=$(git branch --show-current)
+          # Create a fresh, empty master branch
+          git checkout --orphan temp_master
           
-          # Create temporary directory for master branch
-          mkdir -p /tmp/master
+          # Remove all files from staging
+          git rm -rf --cached .
           
-          # Copy generated content to temporary directory
-          cp -r output/* /tmp/master/
+          # Add only the contents of the output directory
+          cp -r output/* .
           
-          # Switch to master branch
-          git checkout master || git checkout --orphan master
+          # Stage the changes
+          git add .
           
-          # Remove existing content but preserve .git
-          find . -maxdepth 1 ! -name .git ! -name . -exec rm -rf {} \;
+          # Commit the changes
+          git commit -m "Deploy site $(date +'%Y-%m-%d %H:%M:%S')"
           
-          # Copy content from output directory
-          cp -r /tmp/master/* .
+          # Force push to master branch
+          git push -f origin temp_master:master
           
-          # Add, commit and push changes
-          git add -A
-          git commit -m "Deploy site $(date +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
-          git push origin master
-          
-          # Return to original branch
-          git checkout $CURRENT_BRANCH
+          echo "Site successfully deployed to master branch!"
