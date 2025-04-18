@@ -8,7 +8,7 @@ sys.path.append(os.curdir)
 from pelicanconf import *
 
 # If your site is available via HTTPS, make sure SITEURL begins with https://
-SITEURL = ""
+SITEURL = 'https://soringherghisan.github.io/pelican_blog'
 RELATIVE_URLS = False
 
 DELETE_OUTPUT_DIRECTORY = True

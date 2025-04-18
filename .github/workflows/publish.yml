@@ -1,4 +1,4 @@
-name: Build & Deploy Pelican Site
+name: Deploy Pelican Site to GitHub Pages
 
 on:
   push:
@@ -12,12 +12,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source & submodules
+      - name: Checkout source
         uses: actions/checkout@v4
         with:
-          ref: source
-          token: ${{ secrets.GITHUB_TOKEN }}
-          persist-credentials: true
           fetch-depth: 0
           submodules: recursive
 
@@ -29,9 +26,41 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install invoke pelican ghp-import Markdown
+          pip install -r requirements.txt
 
-      - name: Build & Publish
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: invoke publish
+      - name: Setup Git config
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Build site
+        run: |
+          pelican content -o output -s publishconf.py
+
+      - name: Deploy to GitHub Pages
+        run: |
+          # Save the current branch name
+          CURRENT_BRANCH=$(git branch --show-current)
+          
+          # Create temporary directory for master branch
+          mkdir -p /tmp/master
+          
+          # Copy generated content to temporary directory
+          cp -r output/* /tmp/master/
+          
+          # Switch to master branch
+          git checkout master || git checkout --orphan master
+          
+          # Remove existing content but preserve .git
+          find . -maxdepth 1 ! -name .git ! -name . -exec rm -rf {} \;
+          
+          # Copy content from output directory
+          cp -r /tmp/master/* .
+          
+          # Add, commit and push changes
+          git add -A
+          git commit -m "Deploy site $(date +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
+          git push origin master
+          
+          # Return to original branch
+          git checkout $CURRENT_BRANCH
