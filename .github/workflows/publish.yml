@@ -1,4 +1,4 @@
-name: Build & Deploy Pelican Site
+name: Build & Publish Site
 
 on:
   push:
@@ -7,24 +7,28 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout source & submodules
+      - name: Checkout source & theme submodules
         uses: actions/checkout@v4
         with:
-          submodules: "recursive"
+          ref: source
+          token: ${{ secrets.GITHUB_TOKEN }}
+          submodules: recursive
           fetch-depth: 0
+          persist-credentials: true  # ensure subsequent pushes use the token
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.x"
+          python-version: '3.x'
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install invoke pelican ghp-import
 
-      - name: Build & publish
+      - name: Build & Publish via Invoke
+        run: invoke publish   # inside, ghp-import will push for us
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: invoke publish

@@ -136,7 +136,7 @@ def publish(c):
     # Build with publish settings
     c.run(f"pelican content -o {OUTPUT_DIR} -s {CONFIG_PUBLISH}")
     # Overwrite master branch with output directory
-    c.run(f"ghp-import {OUTPUT_DIR} -b master -n")  # -n skips .nojekyll
+    c.run(f"ghp-import {OUTPUT_DIR} -b master -n -p")  # -n skips .nojekyll, -p pushes to origin/master
     c.run("git push origin master --force")
 
 
