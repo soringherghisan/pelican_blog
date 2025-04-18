@@ -143,7 +143,7 @@ def publish(c):
     c.run(f"pelican content -o {OUTPUT_DIR} -s {CONFIG_PUBLISH}")
 
     # 2) Import into master branch and push via embedded token
-    remote = f"https://{CONFIG['username']}:{CONFIG['GH_TOKEN']}@github.com/{CONFIG['username']}/{CONFIG['blog_repo']}"
+    remote = f"https://{CONFIG['username']}:{CONFIG['GH_TOKEN']}@github.com/{CONFIG['username']}/pelican_blog"
     c.run(
         f"ghp-import {OUTPUT_DIR} "
         f"-m {CONFIG['commit_message']} "

@@ -4,6 +4,9 @@ on:
   push:
     branches: [ source ]
 
+permissions:
+  contents: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -30,5 +33,5 @@ jobs:
 
       - name: Build & Publish
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}    # make token available to tasks.py
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: invoke publish
