@@ -132,10 +132,10 @@ def livereload(c):
 
 @task
 def publish(c):
-    """Build site and push to master via ghp-import."""
-    # 1) Build the site with your publish settings
+    """Build site and deploy to master via ghp-import."""
+    # 1) Build with publish settings
     c.run(f"pelican content -o {OUTPUT_DIR} -s {CONFIG_PUBLISH}")
-    # 2) Import output/ into master branch, skip .nojekyll, and push in one step
+    # 2) Import & push output/ to master in one step
     c.run(f"ghp-import {OUTPUT_DIR} -b master -n -p")
 
 

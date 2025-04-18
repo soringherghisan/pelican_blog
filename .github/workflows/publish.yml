@@ -14,9 +14,9 @@ jobs:
         with:
           ref: source
           token: ${{ secrets.GITHUB_TOKEN }}
-          submodules: recursive
-          fetch-depth: 0
           persist-credentials: true
+          fetch-depth: 0
+          submodules: recursive
 
       - name: Set up Python
         uses: actions/setup-python@v4
