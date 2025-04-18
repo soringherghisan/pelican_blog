@@ -29,6 +29,6 @@ jobs:
           pip install invoke pelican ghp-import Markdown
 
       - name: Build & Publish
-        run: invoke publish
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}    # make token available to tasks.py
+        run: invoke publish

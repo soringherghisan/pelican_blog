@@ -2,6 +2,7 @@ import os
 import shlex
 import shutil
 import sys
+import datetime
 
 from invoke import task
 from invoke.main import program
@@ -26,6 +27,11 @@ CONFIG = {
     # Host and port for `serve`
     "host": "localhost",
     "port": 8000,
+    "username": "soringherghisan",
+    "blog_repo": "pelican_blog.git",
+    "github_pages_branch": "master",
+    "commit_message": f"'Publish site on {datetime.date.today().isoformat()}'",
+    "GH_TOKEN": os.getenv("GH_TOKEN") or os.getenv("GITHUB_TOKEN"),
 }
 
 
@@ -135,8 +141,15 @@ def publish(c):
     """Build site and deploy to master via ghp-import."""
     # 1) Build with publish settings
     c.run(f"pelican content -o {OUTPUT_DIR} -s {CONFIG_PUBLISH}")
-    # 2) Import & push output/ to master in one step
-    c.run(f"ghp-import {OUTPUT_DIR} -b master -n -p")
+
+    # 2) Import into master branch and push via embedded token
+    remote = f"https://{CONFIG['username']}:{CONFIG['GH_TOKEN']}@github.com/{CONFIG['username']}/{CONFIG['blog_repo']}"
+    c.run(
+        f"ghp-import {OUTPUT_DIR} "
+        f"-m {CONFIG['commit_message']} "
+        f"-b {CONFIG['github_pages_branch']} "
+        f"-r {remote}"
+    )
 
 
 def pelican_run(cmd):
