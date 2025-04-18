@@ -1,0 +1,80 @@
+
+name: Deploy Pelican Site to GitHub Pages
+
+on:
+  push:
+    branches: [ source ]
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Setup Git config
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Build site
+        run: |
+          pelican content -o output -s publishconf.py
+
+      - name: Debugging - Show directory structure
+        run: |
+          echo "Content directory structure:"
+          find content -type f | sort
+          
+          echo "Output directory structure:"
+          find output -type f | sort
+          
+          echo "Checking for critical files:"
+          [ -f output/archives.html ] && echo "✓ archives.html exists" || echo "✗ archives.html missing"
+          [ -f output/categories.html ] && echo "✓ categories.html exists" || echo "✗ categories.html missing"
+          [ -d output/category ] && echo "✓ category directory exists" || echo "✗ category directory missing"
+          [ -d output/images ] && echo "✓ images directory exists" || echo "✗ images directory missing"
+          [ -f output/images/profile.png ] && echo "✓ profile.png exists" || echo "✗ profile.png missing"
+          [ -f output/images/favicon.ico ] && echo "✓ favicon.ico exists" || echo "✗ favicon.ico missing"
+
+      - name: Deploy to GitHub Pages
+        run: |
+          # Create fresh branch
+          git checkout --orphan temp_master
+          
+          # Remove all files from staging
+          git rm -rf --cached .
+          
+          # Create .nojekyll file in output directory
+          touch output/.nojekyll
+          
+          # Copy all output contents to root (including .nojekyll)
+          cp -a output/. .
+          
+          # Stage the changes including .nojekyll
+          git add -A
+          
+          # Commit the changes
+          git commit -m "Deploy site $(date +'%Y-%m-%d %H:%M:%S')"
+          
+          # Force push to master branch
+          git push -f origin temp_master:master
+          
+          echo "Site successfully deployed to master branch!"
