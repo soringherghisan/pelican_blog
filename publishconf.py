@@ -11,6 +11,9 @@ from pelicanconf import *
 SITEURL = 'https://soringherghisan.github.io/pelican_blog'
 RELATIVE_URLS = False
 
+# for feeds
+FEED_DOMAIN = SITEURL
+
 DELETE_OUTPUT_DIRECTORY = True
 
 # Following items are often useful when publishing

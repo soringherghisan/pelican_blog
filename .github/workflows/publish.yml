@@ -38,6 +38,15 @@ jobs:
         run: |
           pelican content -o output -s publishconf.py
           
+      - name: Check generated files
+        run: |
+          echo "Checking generated output..."
+          ls -la output/
+          echo "Checking for images..."
+          ls -la output/images/ || echo "No images directory found!"
+          echo "Checking categories..."
+          ls -la output/category/ || echo "No category directory found!"
+
       - name: Deploy to GitHub Pages
         run: |
           # Create a fresh, empty master branch
@@ -48,6 +57,9 @@ jobs:
           
           # Add only the contents of the output directory
           cp -r output/* .
+          
+          # Create .nojekyll file to disable Jekyll processing
+          touch .nojekyll
           
           # Stage the changes
           git add .

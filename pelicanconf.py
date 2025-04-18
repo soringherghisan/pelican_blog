@@ -7,10 +7,14 @@ SITETITLE = 'Gherghisian Sorinian'
 SITESUBTITLE = 'Generalist'
 
 BROWSER_COLOR = '#d6a691'  # todo: # what does this do ? doesn't seem to have any effect
-SITELOGO = SITEURL + '/images/profile.png'
-FAVICON = SITEURL + '/images/favicon.ico'
+SITELOGO = '/images/profile.png'
+FAVICON = '/images/favicon.ico'
 
 PATH = 'content'
+STATIC_PATHS = ['images', 'extra/CNAME']  # Make sure images are copied
+EXTRA_PATH_METADATA = {
+    'extra/CNAME': {'path': 'CNAME'},
+}
 ROBOTS = 'index, follow'
 OUTPUT_PATH = 'output/'
 
@@ -63,3 +67,15 @@ CC_LICENSE = {
     'icon': True,
     'language': 'en_US',
 }
+
+# URL settings for GitHub Pages project sites
+ARTICLE_URL = '{slug}.html'
+ARTICLE_SAVE_AS = '{slug}.html'
+PAGE_URL = '{slug}.html'
+PAGE_SAVE_AS = '{slug}.html'
+CATEGORY_URL = 'category/{slug}.html'
+CATEGORY_SAVE_AS = 'category/{slug}.html'
+TAG_URL = 'tag/{slug}.html'
+TAG_SAVE_AS = 'tag/{slug}.html'
+AUTHOR_URL = 'author/{slug}.html'
+AUTHOR_SAVE_AS = 'author/{slug}.html'
