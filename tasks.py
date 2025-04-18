@@ -88,6 +88,7 @@ def preview(c):
     """Build production version of site"""
     pelican_run("-s {settings_publish}".format(**CONFIG))
 
+
 @task
 def livereload(c):
     """Automatically reload browser tab upon file modification."""
@@ -129,15 +130,13 @@ def livereload(c):
 
 @task
 def publish(c):
-    """Publish to production via rsync"""
-    pelican_run("-s {settings_publish}".format(**CONFIG))
-    c.run(
-        'rsync --delete --exclude ".DS_Store" -pthrvz -c '
-        '-e "ssh -p {ssh_port}" '
-        "{} {ssh_user}@{ssh_host}:{ssh_path}".format(
-            CONFIG["deploy_path"].rstrip("/") + "/", **CONFIG
-        )
-    )
+    pelican_run(f"-s {CONFIG['settings_publish']}")
+    # Commit built files, split into a temp branch, and push to master
+    c.run(f"git add -f {CONFIG['deploy_path']}")
+    c.run("git commit -m 'Publish site'")
+    c.run(f"git subtree split --prefix {CONFIG['deploy_path']} -b publish-temp")
+    c.run("git push origin publish-temp:master --force")
+    c.run("git branch -D publish-temp")
 
 
 def pelican_run(cmd):

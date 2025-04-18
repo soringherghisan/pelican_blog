@@ -59,7 +59,7 @@ LOAD_CONTENT_CACHE = False
 
 # For Flex Theme # some taken from ` downloaded_themes/Flex/docs/pelicanconf.py `
 # not sure if some of the above are not also theme specific - will have to check
-THEME = 'Flex'
+THEME = '/theme/Flex'
 THEME_COLOR_AUTO_DETECT_BROWSER_PREFERENCE = True
 THEME_COLOR_ENABLE_USER_OVERRIDE = True
 
