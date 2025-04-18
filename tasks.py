@@ -15,6 +15,8 @@ SETTINGS = {}
 SETTINGS.update(DEFAULT_CONFIG)
 LOCAL_SETTINGS = get_settings_from_file(SETTINGS_FILE_BASE)
 SETTINGS.update(LOCAL_SETTINGS)
+OUTPUT_DIR = "output"
+CONFIG_PUBLISH = "publishconf.py"
 
 CONFIG = {
     "settings_base": SETTINGS_FILE_BASE,
@@ -130,13 +132,12 @@ def livereload(c):
 
 @task
 def publish(c):
-    pelican_run(f"-s {CONFIG['settings_publish']}")
-    # Commit built files, split into a temp branch, and push to master
-    c.run(f"git add -f {CONFIG['deploy_path']}")
-    c.run("git commit -m 'Publish site'")
-    c.run(f"git subtree split --prefix {CONFIG['deploy_path']} -b publish-temp")
-    c.run("git push origin publish-temp:master --force")
-    c.run("git branch -D publish-temp")
+    """Build site and push to master via ghp-import."""
+    # Build with publish settings
+    c.run(f"pelican content -o {OUTPUT_DIR} -s {CONFIG_PUBLISH}")
+    # Overwrite master branch with output directory
+    c.run(f"ghp-import {OUTPUT_DIR} -b master -n")  # -n skips .nojekyll
+    c.run("git push origin master --force")
 
 
 def pelican_run(cmd):

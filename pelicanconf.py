@@ -6,7 +6,7 @@ SITENAME = 'Pelican Docs Tutorial'
 SITETITLE = 'Gherghisian Sorinian'
 SITESUBTITLE = 'Generalist'
 
-BROWSER_COLOR = '#d6a691'       # todo: # what does this do ? doesn't seem to have any effect
+BROWSER_COLOR = '#d6a691'  # todo: # what does this do ? doesn't seem to have any effect
 SITELOGO = SITEURL + '/images/profile.png'
 FAVICON = SITEURL + '/images/favicon.ico'
 
@@ -28,7 +28,6 @@ MENUITEMS = (
 
 COPYRIGHT_YEAR = datetime.now().year
 
-# Feed generation is usually not desired when developing
 FEED_ALL_ATOM = None
 CATEGORY_FEED_ATOM = None
 TRANSLATION_FEED_ATOM = None
@@ -43,23 +42,17 @@ LINKS = (
 
 SOCIAL = (
     ('github', 'https://github.com/soringherghisan/'),
-    ('linkedin', 'https://www.linkedin.com/in/sorin-gherghisan-434106194')
 )
 
 DEFAULT_PAGINATION = 10
 
-STATIC_CHECK_IF_MODIFIED = True     # todo: check what this does
+STATIC_CHECK_IF_MODIFIED = True  # todo: check what this does
 
-# Uncomment following line if you want document-relative URLs when developing
-# RELATIVE_URLS = True
-
-# seems this options is needed for fixing various settings problems,
-# although it's not added by default
 LOAD_CONTENT_CACHE = False
 
 # For Flex Theme # some taken from ` downloaded_themes/Flex/docs/pelicanconf.py `
 # not sure if some of the above are not also theme specific - will have to check
-THEME = '/theme/Flex'
+THEME = './theme/Flex'
 THEME_COLOR_AUTO_DETECT_BROWSER_PREFERENCE = True
 THEME_COLOR_ENABLE_USER_OVERRIDE = True
 
