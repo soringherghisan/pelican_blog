@@ -18,51 +18,58 @@ jobs:
         with:
           fetch-depth: 0
           submodules: recursive
-          
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
-          
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          
+
       - name: Setup Git config
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          
+
       - name: Build site
         run: |
           pelican content -o output -s publishconf.py
-          
-      - name: Check generated files
+
+      - name: Debugging - Show directory structure
         run: |
-          echo "Checking generated output..."
-          ls -la output/
-          echo "Checking for images..."
-          ls -la output/images/ || echo "No images directory found!"
-          echo "Checking categories..."
-          ls -la output/category/ || echo "No category directory found!"
+          echo "Content directory structure:"
+          find content -type f | sort
+          
+          echo "Output directory structure:"
+          find output -type f | sort
+          
+          echo "Checking for critical files:"
+          [ -f output/archives.html ] && echo "✓ archives.html exists" || echo "✗ archives.html missing"
+          [ -f output/categories.html ] && echo "✓ categories.html exists" || echo "✗ categories.html missing"
+          [ -d output/category ] && echo "✓ category directory exists" || echo "✗ category directory missing"
+          [ -d output/images ] && echo "✓ images directory exists" || echo "✗ images directory missing"
+          [ -f output/images/profile.png ] && echo "✓ profile.png exists" || echo "✗ profile.png missing"
+          [ -f output/images/favicon.ico ] && echo "✓ favicon.ico exists" || echo "✗ favicon.ico missing"
 
       - name: Deploy to GitHub Pages
         run: |
-          # Create a fresh, empty master branch
+          # Create fresh branch
           git checkout --orphan temp_master
           
           # Remove all files from staging
           git rm -rf --cached .
           
-          # Add only the contents of the output directory
-          cp -r output/* .
+          # Create .nojekyll file in output directory
+          touch output/.nojekyll
           
-          # Create .nojekyll file to disable Jekyll processing
-          touch .nojekyll
+          # Copy all output contents to root (including .nojekyll)
+          cp -a output/. .
           
-          # Stage the changes
-          git add .
+          # Stage the changes including .nojekyll
+          git add -A
           
           # Commit the changes
           git commit -m "Deploy site $(date +'%Y-%m-%d %H:%M:%S')"

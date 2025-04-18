@@ -11,12 +11,12 @@ SITELOGO = '/images/profile.png'
 FAVICON = '/images/favicon.ico'
 
 PATH = 'content'
-STATIC_PATHS = ['images', 'extra/CNAME']  # Make sure images are copied
+STATIC_PATHS = ['images']
+OUTPUT_PATH = 'output/'
 EXTRA_PATH_METADATA = {
     'extra/CNAME': {'path': 'CNAME'},
 }
 ROBOTS = 'index, follow'
-OUTPUT_PATH = 'output/'
 
 TIMEZONE = 'Europe/Rome'
 DEFAULT_LANG = 'English'
